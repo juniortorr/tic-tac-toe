@@ -72,26 +72,22 @@ const cell = (function(){
 
         if(gameBoard.allEqual(diagonalOne) && diagonalOne[0] == game.player1.marker || gameBoard.allEqual(diagonalOne) && diagonalOne[0] == game.player2.marker) {
             for(let i=0; i<=cells.length; i++){
-                if(i == 0 || i == 4 || i == 8) { addWinnerClass(cells[i], player) }
+                if(i == 0 || i == 4 || i == 8) { addWinnerClass(cells[i], player), gameBoard.showHidden() }
             }
         } 
         if(gameBoard.allEqual(diagonalTwo) && diagonalTwo[0] == game.player1.marker || gameBoard.allEqual(diagonalTwo) && diagonalTwo[0] == game.player2.marker) {
             for(let i=0; i<=cells.length; i++){
-                if(i == 2 || i == 4 || i == 6) { addWinnerClass(cells[i], player) }
+                if(i == 2 || i == 4 || i == 6) { addWinnerClass(cells[i], player), gameBoard.showHidden() }
             }
-        }
-        if(typeof row === 'number'){
-            for(let i=0; i<cells.length; i++){
-                if(i == row || i == row + 1 || i == row + 2 ) { addWinnerClass(cells[i], player) }
-            }
-            
-        }
-        if(typeof col === 'number'){
-            for(let i=0; i<cells.length; i++){
-                if(i == col || i == col + 3 || i == col + 6) { addWinnerClass(cells[i], player) }
-            } 
         }
 
+        for(let i=0; i<cells.length; i++) {
+            if(typeof row === 'number'){
+                if(i == row || i == row + 1 || i == row + 2 ) { addWinnerClass(cells[i], player), gameBoard.showHidden()}
+            } else  if(typeof col === 'number'){
+                if(i == col || i == col + 3 || i == col + 6) { addWinnerClass(cells[i], player), gameBoard.showHidden() }
+            }
+        }
     }
 
 
@@ -184,10 +180,14 @@ const gameBoard = (function() {
         
     }
 
+    const winnerDisplay = document.querySelector('.winnerDisplay')
     const nextMatch = document.querySelector('.match');
     nextMatch.addEventListener('click', () => {
         clearBoard();
+        nextMatch.classList.add('hidden')
+        winnerDisplay.classList.add('hidden')
     })
+
     const clearBoard = () => {
         const cells = document.querySelectorAll('.cell');
         gameBoard.board = [0,1,2,3,4,5,6,7,8]
@@ -202,6 +202,11 @@ const gameBoard = (function() {
         })
 
     }
+
+    const showHidden = () => {
+        nextMatch.classList.remove('hidden');
+        winnerDisplay.classList.remove('hidden');
+    }
     
     return {
             board,
@@ -209,7 +214,8 @@ const gameBoard = (function() {
             checkForWinner,
             clearBoard,
             reset,
-            allEqual
+            allEqual,
+            showHidden
             };
 })();
 
