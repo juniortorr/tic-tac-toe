@@ -19,12 +19,12 @@ const game = (function() {
     const updateScore = (player) => {
         player.score += 1
         player.display.textContent = `Score: ${player.score}`;
-        console.log('hello i am here updating the score')
-        console.log(player.name, player.score)
-        setTimeout(() => {
-            gameBoard.clearBoard()
-        }, 500)
+
+        // setTimeout(() => {
+        //     gameBoard.clearBoard()
+        // }, 500)
         gameBoard.reset = 'on'
+
     }
 
 
@@ -55,8 +55,50 @@ const cell = (function(){
         item.addEventListener('click', () => player.playTurn(item));
     }
 
+    const addWinnerClass = (cell, player) => {
+        if(player == 'player1'){
+            cell.classList.add('winner');
+        } else if (player === 'player2'){
+            cell.classList.add('loser')
+        }
+    }
 
-    return {createCell};
+    const winnerCell = (row, col, player) => {
+
+        const diagonalOne = [gameBoard.board[0], gameBoard.board[4], gameBoard.board[8]];
+        const diagonalTwo = [gameBoard.board[2], gameBoard.board[4], gameBoard.board[6]];
+        const cells = document.querySelectorAll('.cell');
+
+
+        if(gameBoard.allEqual(diagonalOne) && diagonalOne[0] == game.player1.marker || gameBoard.allEqual(diagonalOne) && diagonalOne[0] == game.player2.marker) {
+            for(let i=0; i<=cells.length; i++){
+                if(i == 0 || i == 4 || i == 8) { addWinnerClass(cells[i], player) }
+            }
+        } 
+        if(gameBoard.allEqual(diagonalTwo) && diagonalTwo[0] == game.player1.marker || gameBoard.allEqual(diagonalTwo) && diagonalTwo[0] == game.player2.marker) {
+            for(let i=0; i<=cells.length; i++){
+                if(i == 2 || i == 4 || i == 6) { addWinnerClass(cells[i], player) }
+            }
+        }
+        if(typeof row === 'number'){
+            for(let i=0; i<cells.length; i++){
+                if(i == row || i == row + 1 || i == row + 2 ) { addWinnerClass(cells[i], player) }
+            }
+            
+        }
+        if(typeof col === 'number'){
+            for(let i=0; i<cells.length; i++){
+                if(i == col || i == col + 3 || i == col + 6) { addWinnerClass(cells[i], player) }
+            } 
+        }
+
+    }
+
+
+    return {
+        createCell,
+        winnerCell
+    };
  }())
 
 
@@ -65,7 +107,6 @@ const gameBoard = (function() {
 
     let board = []
     let reset = '';
-
     for (let i = 0; i < 9; i++) {
             board[i] = i;
             cell.createCell(i)
@@ -73,7 +114,6 @@ const gameBoard = (function() {
 
       const markers = document.querySelectorAll('.markerBtn');
       const markerWrapper = document.querySelector('.markerWrapper');
-
       markers.forEach((marker) => {
           marker.addEventListener('click', () => player.chooseMarker(marker, markerWrapper))
       })
@@ -96,14 +136,17 @@ const gameBoard = (function() {
 
     const allEqual = arr => arr.every(val => val === arr[0]);
 
+
     const checkForWinner = (item) => {
-        if(allEqual([gameBoard.board[0], gameBoard.board[4], gameBoard.board[8]]) && gameBoard.board[0] == game.player1.marker||
-            allEqual([gameBoard.board[2], gameBoard.board[4], gameBoard.board[6]]) && gameBoard.board[2] == game.player1.marker)
-            {
+        const diagonalOne = [board[0], board[4], board[8]];
+        const diagonalTwo = [board[2], board[4], board[6]];
+        if(allEqual(diagonalOne) && board[0] == game.player1.marker || allEqual(diagonalTwo) && board[2] == game.player1.marker){
+            cell.winnerCell('', '', 'player1');
             game.updateScore(game.player1)
-            } else if(allEqual([gameBoard.board[0], gameBoard.board[4], gameBoard.board[8]]) && gameBoard.board[0] == game.player2.marker||
-        allEqual([gameBoard.board[2], gameBoard.board[4], gameBoard.board[6]]) && gameBoard.board[2] == game.player2.marker){
-            game.updateScore(game.player2)
+            } else if(allEqual(diagonalOne) && board[0] == game.player2.marker ||  allEqual(diagonalTwo) && board[2] == game.player2.marker){
+            game.updateScore(game.player2) 
+            cell.winnerCell('', '', 'player2')
+            // Dont forget to add a loser class or like a red outline or something adjacent of winnerCell()
         }
         
         // Check Horizontals & Verticals
@@ -113,14 +156,17 @@ const gameBoard = (function() {
         let newBoard;
         let newBoard2;
  
-        for(let i=1; i<4; i++) {
+        for(let i=0; i<7; i+=3) {
             newBoard = horizonCheck.splice(0, 3);
             if(allEqual(newBoard) && newBoard[0] == game.player1.marker){
                 console.log('OMG YOU WON')
                 game.updateScore(game.player1)
+                cell.winnerCell(i, '', 'player1')
+
             } else if (allEqual(newBoard) && newBoard[0] == game.player2.marker) {
                 console.log('ah nah player 2 won')
                 game.updateScore(game.player2)
+                cell.winnerCell(i, '', 'player2')
             }
         }
         for(let i=0; i<3; i++) {
@@ -128,14 +174,20 @@ const gameBoard = (function() {
             if(allEqual([gameBoard.board[i+3], gameBoard.board[i+6], newBoard2[0]]) && newBoard2[0] == game.player1.marker){
                 game.updateScore(game.player1)
                 console.log('you won papa')
+                cell.winnerCell('', i, 'player1');
             } else if(allEqual([gameBoard.board[i+3], gameBoard.board[i+6], newBoard2[0]]) && newBoard2[0] == game.player2.marker){
                 console.log('player 2 wins')
+                cell.winnerCell('', i, 'player2')
                 game.updateScore(game.player2)
             }
         }
         
     }
 
+    const nextMatch = document.querySelector('.match');
+    nextMatch.addEventListener('click', () => {
+        clearBoard();
+    })
     const clearBoard = () => {
         const cells = document.querySelectorAll('.cell');
         gameBoard.board = [0,1,2,3,4,5,6,7,8]
@@ -143,6 +195,8 @@ const gameBoard = (function() {
         cells.forEach((cell) => {
             cell.classList.remove('x');
             cell.classList.remove('o');
+            cell.classList.remove('winner')
+            cell.classList.remove('loser')
             newValue = gameBoardCopy.splice(0, 1)
             cell.value = newValue[0];
         })
@@ -154,7 +208,8 @@ const gameBoard = (function() {
             movesCheck,
             checkForWinner,
             clearBoard,
-            reset
+            reset,
+            allEqual
             };
 })();
 

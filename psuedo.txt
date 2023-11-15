@@ -1,0 +1,12 @@
+ WHAT WE WANT IT TO DO 
+        Create a function in the cell module that will transform the winning cells
+        when you win DONT CLEAR THE BOARD
+        add the class of .winner to the winning spaces
+        display an h1 that will show who won  
+
+ Add in a user input for player name in between the marker selector 
+        and the bot thingy 
+
+Winner cell function
+    select the cells that correspond to the gameBoard.board[]
+    add a winning class to each won 
