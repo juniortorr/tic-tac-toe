@@ -18,6 +18,7 @@ const game = (function() {
     const changeNameInput = document.querySelector('.changeNameInput');
     const player1Name = document.querySelector('.player1Name');
     const form = document.querySelector('form')
+    const winnerDisplay = document.querySelector('.winnerDisplay')
 
 
     
@@ -37,6 +38,7 @@ const game = (function() {
         game.player2.score = 0;
         game.player1.display.textContent = `Score: ${game.player1.score}`
         game.player2.display.textContent = `Score: ${game.player2.score}`
+        form.classList.add('hidden');
     }
     startOverBtn.addEventListener('click', () => { startOver() })
 
@@ -55,6 +57,11 @@ const game = (function() {
         changeName() 
     })
 
+    const hideComponents = () => {
+        form.classList.add('hidden')
+        winnerDisplay.classList.add('hidden')
+    }
+
 
     return {
         player1,
@@ -62,7 +69,8 @@ const game = (function() {
         score,
         player1Score,
         player2Score,
-        updateScore
+        updateScore,
+        hideComponents
     }
 
 }())
@@ -79,7 +87,7 @@ const cell = (function(){
         item.classList.add('cell');
         container.append(item);
         item.value = index;
-        item.addEventListener('click', () => player.playTurn(item));
+        item.addEventListener('click', () => { game.hideComponents(), player.playTurn(item) });
     }
 
     const addWinnerClass = (cell, player) => {
@@ -167,13 +175,13 @@ const gameBoard = (function() {
         diagonalTwo = [gameBoard.board[2], gameBoard.board[4], gameBoard.board[6]];
         console.log(diagonalOne, 'diagonal one')
         console.log(gameBoard.board);
-        if(allEqual(diagonalOne) && board[0] == game.player1.marker || allEqual(diagonalTwo) && board[2] == game.player1.marker){
+        if(allEqual(diagonalOne) && board[0] == game.player1.marker || allEqual(diagonalTwo) && gameBoard.board[2] == game.player1.marker){
             cell.winnerCell('', '', 'player1');
             game.updateScore(game.player1)
             gameBoard.reset = 'on'
             diagonalOne = []
             diagonalTwo = []
-            } else if(allEqual(diagonalOne) && board[0] == game.player2.marker ||  allEqual(diagonalTwo) && board[2] == game.player2.marker){
+            } else if(allEqual(diagonalOne) && board[0] == game.player2.marker ||  allEqual(diagonalTwo) && gameBoard.board[2] == game.player2.marker){
             game.updateScore(game.player2) 
             cell.winnerCell('', '', 'player2')
             gameBoard.reset = 'on'
@@ -226,8 +234,6 @@ const gameBoard = (function() {
     const nextMatch = document.querySelector('.match');
     nextMatch.addEventListener('click', () => {
         clearBoard();
-        nextMatch.classList.add('hidden')
-        winnerDisplay.classList.add('hidden')
     })
 
     const clearBoard = () => {
@@ -242,6 +248,8 @@ const gameBoard = (function() {
             cell.classList.remove('loser')
             newValue = gameBoardCopy.splice(0, 1)
             cell.value = newValue[0];
+            nextMatch.classList.add('hidden')
+            winnerDisplay.classList.add('hidden')
         })
 
     }
@@ -315,7 +323,10 @@ const player = (function() {
                     gameBoard.checkForWinner(item);
                     console.log(gameBoard.reset)
                     if(!gameBoard.reset){
-                        getComputerChoice(item)
+                        setTimeout(() => {
+                            getComputerChoice(item)
+                        }, 500)
+
                     }
                     break
                 }
