@@ -10,3 +10,12 @@
 Winner cell function
     select the cells that correspond to the gameBoard.board[]
     add a winning class to each won 
+    \
+
+
+
+    position: absolute;
+
+        if(row){
+            
+        }

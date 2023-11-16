@@ -23,7 +23,6 @@ const game = (function() {
         // setTimeout(() => {
         //     gameBoard.clearBoard()
         // }, 500)
-        gameBoard.reset = 'on'
 
     }
 
@@ -134,16 +133,26 @@ const gameBoard = (function() {
 
 
     const checkForWinner = (item) => {
-        const diagonalOne = [board[0], board[4], board[8]];
-        const diagonalTwo = [board[2], board[4], board[6]];
+        let diagonalOne;
+        let diagonalTwo;
+        diagonalOne = [gameBoard.board[0], gameBoard.board[4], gameBoard.board[8]];
+        diagonalTwo = [gameBoard.board[2], gameBoard.board[4], gameBoard.board[6]];
+        console.log(diagonalOne, 'diagonal one')
+        console.log(gameBoard.board);
         if(allEqual(diagonalOne) && board[0] == game.player1.marker || allEqual(diagonalTwo) && board[2] == game.player1.marker){
             cell.winnerCell('', '', 'player1');
             game.updateScore(game.player1)
+            gameBoard.reset = 'on'
+            diagonalOne = []
+            diagonalTwo = []
             } else if(allEqual(diagonalOne) && board[0] == game.player2.marker ||  allEqual(diagonalTwo) && board[2] == game.player2.marker){
             game.updateScore(game.player2) 
             cell.winnerCell('', '', 'player2')
+            gameBoard.reset = 'on'
             // Dont forget to add a loser class or like a red outline or something adjacent of winnerCell()
         }
+
+        console.log(diagonalOne, 'twice')
         
         // Check Horizontals & Verticals
 
@@ -158,11 +167,14 @@ const gameBoard = (function() {
                 console.log('OMG YOU WON')
                 game.updateScore(game.player1)
                 cell.winnerCell(i, '', 'player1')
-
+                gameBoard.reset = 'on';
+                return
             } else if (allEqual(newBoard) && newBoard[0] == game.player2.marker) {
                 console.log('ah nah player 2 won')
                 game.updateScore(game.player2)
                 cell.winnerCell(i, '', 'player2')
+                gameBoard.reset = 'on'
+                return
             }
         }
         for(let i=0; i<3; i++) {
@@ -171,10 +183,12 @@ const gameBoard = (function() {
                 game.updateScore(game.player1)
                 console.log('you won papa')
                 cell.winnerCell('', i, 'player1');
+                gameBoard.reset = 'on'
             } else if(allEqual([gameBoard.board[i+3], gameBoard.board[i+6], newBoard2[0]]) && newBoard2[0] == game.player2.marker){
                 console.log('player 2 wins')
                 cell.winnerCell('', i, 'player2')
                 game.updateScore(game.player2)
+                gameBoard.reset = 'on'
             }
         }
         
@@ -189,6 +203,7 @@ const gameBoard = (function() {
     })
 
     const clearBoard = () => {
+        reset = ''
         const cells = document.querySelectorAll('.cell');
         gameBoard.board = [0,1,2,3,4,5,6,7,8]
         gameBoardCopy = [...gameBoard.board]
