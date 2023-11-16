@@ -11,9 +11,9 @@
     <div class="nav">
         <h1>Tic-Tac-Toe</h1>
         <div class="gameOptions">
-            <button class="startOver">Start Over</button>
+            <button class="gameOption changeName">Change Name</button>
+            <button class="gameOption startOver">Start Over</button>
         </div>
-
     </div>
 
     <div class="markerWrapper">
@@ -32,13 +32,16 @@
     <div class="containerWrapper">
         
         <div class="player1 player">
-            <h1>Player 1</h1>
+            <h1 class="player1Name">Player 1</h1>
             <h2 class="player1Score" value="0">Score</h2>
         </div>
 
 
             <div class="container">
                 <h1 class="winnerDisplay hidden">You are the winner</h1>
+                <form class="hidden" action="">
+                    <input class="changeNameInput" type="text" placeholder="enter new name">
+                </form>
                 <div class="buttonWrapper">
                     <button class="match hidden">Next Match</button>
                 </div>

@@ -74,8 +74,12 @@ body{
     margin-bottom: 0;
     font-size: 3rem;
 }
-.startOver {
-    margin-right: 100px;
+.gameOptions {
+    display: flex; 
+    gap: 30px;
+    margin-right: 50px;
+}
+.gameOption {
     width: 200px;
     height: 40px;
     outline: none;
@@ -83,6 +87,7 @@ body{
     border: 2px solid black;
     font-size: 1.2rem;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 h1 {
@@ -92,7 +97,18 @@ h1 {
     font-size: 2.2rem;
 }
 
-
+form {
+    position: absolute;
+    width: 100%;
+    height: 70px;
+    top: 70px;
+    text-align: center;
+}
+form input {
+    height: 30px;
+    width: 150px;
+    font-size: .9rem;
+}
 
 .player {
     height: 100%;

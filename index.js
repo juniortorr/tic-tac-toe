@@ -13,6 +13,11 @@ const game = (function() {
     let player2Score = document.querySelector('.player2Score');
     let player1 = new Player('Player1', 0, null, player1Score)
     let player2  = new Player('Player2', 0, null, player2Score)
+    const startOverBtn = document.querySelector('.startOver');
+    const changeNameBtn = document.querySelector('.changeName');
+    const changeNameInput = document.querySelector('.changeNameInput');
+    const player1Name = document.querySelector('.player1Name');
+    const form = document.querySelector('form')
 
 
     
@@ -26,6 +31,29 @@ const game = (function() {
 
     }
 
+    const startOver = () => {
+        gameBoard.clearBoard();
+        game.player1.score = 0;
+        game.player2.score = 0;
+        game.player1.display.textContent = `Score: ${game.player1.score}`
+        game.player2.display.textContent = `Score: ${game.player2.score}`
+    }
+    startOverBtn.addEventListener('click', () => { startOver() })
+
+    const changeName = () =>{
+        game.player1.name = changeNameInput.value;
+        player1Name.textContent = game.player1.name;
+        changeNameInput.textContent = 'enter new name'
+        changeNameInput.value = ''
+        form.classList.add('hidden');
+    }
+    changeNameBtn.addEventListener('click', () => {
+        form.classList.remove('hidden');
+    })
+    form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        changeName() 
+    })
 
 
     return {
